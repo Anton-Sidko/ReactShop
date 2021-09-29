@@ -1,3 +1,6 @@
+import {useContext} from 'react';
+import {ShopContext} from '../context';
+
 function CartItem(props) {
     const {
         id,
@@ -5,9 +8,9 @@ function CartItem(props) {
         price,
         quantity,
         preview,
-        removeFromCart = Function.prototype,
-        changeQuantityItem = Function.prototype
     } = props;
+
+    const {removeFromCart, changeQuantityItem} = useContext(ShopContext);
 
     return (
         <li className="collection-item cart-list-item">
