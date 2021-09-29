@@ -4,7 +4,9 @@ function CartItem(props) {
         name,
         price,
         quantity,
-        preview
+        preview,
+        removeFromCart = Function.prototype,
+        changeQuantityItem = Function.prototype
     } = props;
 
     return (
@@ -13,11 +15,27 @@ function CartItem(props) {
                 <div className="cart-list-img">
                     <img src={preview} alt={name} />
                 </div>
-                {name} x {quantity} = {price * quantity} V
+                {
+                    quantity ? (
+                        <div>
+                            {name} x {quantity} = {price * quantity} V
+                        </div>
+                    ) : (
+                        <div className="deep-orange-text text-darken-3">
+                            {name} x {quantity} = {price * quantity} V (Нулевое количество товара. Добавьте количество или удалите товар из корзины)
+                        </div>
+                    )
+                }
             </div>
-            <span href="#!" class="secondary-content">
-                <i class="material-icons">remove_shopping_cart</i>
-            </span>
+            <div className="control-list-item">
+                <div className="change-quantity-wrap">
+                    <button className="change-quantity-item" onClick={() => changeQuantityItem(id, 1)}>+</button>
+                    <button className="change-quantity-item" onClick={() => changeQuantityItem(id, -1)}>-</button>
+                </div>
+                <span className="secondary-content" onClick={() => removeFromCart(id)}>
+                    <i className="material-icons">remove_shopping_cart</i>
+                </span>
+            </div>
         </li>
     )
 }

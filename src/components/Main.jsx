@@ -5,6 +5,7 @@ import {Preloader} from './Preloader';
 import {GoodsList} from './GoodsList';
 import {Cart} from './Cart';
 import {CartList} from './CartList';
+import {Alert} from './Alert';
 
 
 function Main() {
@@ -12,6 +13,7 @@ function Main() {
     const [loading, setLoading] = useState(true);
     const [order, setOrder] = useState([]);
     const [isCartShow, setCartShow] = useState(false);
+    const [alertName, setAlertName] = useState ('');
 
     const addToCart = (item) => {
         const itemIndex = order.findIndex(orderItem => orderItem.id === item.id);
@@ -35,6 +37,28 @@ function Main() {
             })
             setOrder(newOrder);
         }
+        setAlertName(item.name);
+    };
+
+    const removeFromCart = (itemId) => {
+        const newOrder = order.filter(el => el.id !== itemId);
+        setOrder(newOrder);
+    };
+
+    const changeQuantityItem = (itemId, n) => {
+        const newOrder = order.map(el => {
+            if (el.id === itemId) {
+                const newQuantity = el.quantity + n;
+                return {
+                    ...el,
+                    quantity: newQuantity > 0 ? newQuantity : 0
+                }
+            } else {
+                return el;
+            }
+        });
+
+        setOrder(newOrder);
     };
 
     const handleCartShow = () => {
@@ -46,6 +70,10 @@ function Main() {
             document.body.style.overflow='';
             document.querySelector('.goods-list').style.webkitFilter = '';
         }
+    };
+
+    const closeAlert = () => {
+        setAlertName('');
     };
 
     useEffect(function getGoods() {
@@ -60,9 +88,6 @@ function Main() {
             setLoading(false);
         })
     }, []);
-    console.log(API_KEY)
-    console.log(goods);
-
 
     return (
         <main className="container">
@@ -72,7 +97,16 @@ function Main() {
                 <GoodsList goods={goods} addToCart={addToCart}/>
             )}
             {
-                isCartShow && <CartList order={order} handleCartShow={handleCartShow}/>
+                isCartShow && (
+                <CartList
+                    order={order}
+                    handleCartShow={handleCartShow}
+                    removeFromCart={removeFromCart}
+                    changeQuantityItem={changeQuantityItem}
+                />)
+            }
+            {
+                alertName && <Alert name={alertName} closeAlert={closeAlert}/>
             }
         </main>
     );
